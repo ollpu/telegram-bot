@@ -5,6 +5,7 @@ VERSION = '0.10.0'
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
   -- vardump(msg)
+  print(msg == nil)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
     match_plugins(msg)
