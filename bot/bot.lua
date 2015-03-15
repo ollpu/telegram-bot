@@ -83,7 +83,7 @@ function match_plugin(plugin, msg)
           local text = '❱ This plugin requires privileged user'
           send_msg(receiver, text, ok_cb, false)
         else
-          result = "❱ "..plugin.run(msg, result)
+          result = "❱ "..plugin.run(msg, matches)
           print("to_type===>>>", to_type, "<<<")
           if to_type:find('chat') then
             _send_msg(receiver, result)
