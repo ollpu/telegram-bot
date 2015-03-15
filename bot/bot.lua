@@ -27,11 +27,7 @@ function on_binlog_replay_end()
 end
 
 function msg_valid(msg)
-  -- Dont process outgoing messages
-  if msg.out then
-    print("Not valid, msg from us")
-    return false
-  end
+  -- MOD by @ollpu: Allow messages sent by us (removed check)
   if msg.date < now then
     print("Not valid, old msg")
     return false
@@ -76,13 +72,26 @@ function match_plugin(plugin, msg)
       if plugin.run ~= nil then
         -- If plugin is for privileged users only
         if not user_allowed(plugin, msg) then
-          local text = 'This plugin requires privileged user'
+          local text = '❱ This plugin requires privileged user'
           send_msg(receiver, text, ok_cb, false)
         else
-          -- Send the returned text by run function.
-          result = plugin.run(msg, matches)
-          if result ~= nil then
+          result = "❱ "..do_lex(msg, result)
+          print("to_type===>>>", to_type, "<<<")
+          if to_type:find('chat') then
             _send_msg(receiver, result)
+            print("to_type=chat")
+          else
+            print("from=>", from, "<")
+            print("to=>", to, "<")
+            if not string.find(to, "50886815") then
+              _send_msg(msg.to.print_name, result)
+              print("tried sending to >", msg.from.print_name, "<")
+              print("from:me and not to:me")
+            else
+              print("from:me and to:me!")
+              _send_msg(receiver, result)
+            end
+            print("to_type!=chat")
           end
         end
       end
@@ -182,7 +191,7 @@ function create_config( )
       "weather",
       "xkcd",
       "youtube" },
-    sudo_users = {our_id}  
+    sudo_users = {our_id}
   }
   serialize_to_file(config, './data/config.lua')
   print ('saved config into ./data/config.lua')
