@@ -66,7 +66,6 @@ function match_plugin(plugin, msg)
     -- print(msg.text, pattern)
     matches = { string.match(msg.text, pattern) }
     if matches[1] then
-      mark_read(receiver, ok_cb, false)
       print("  matches", pattern)
       -- Function exists
       if plugin.run ~= nil then
@@ -75,7 +74,7 @@ function match_plugin(plugin, msg)
           local text = '❱ This plugin requires privileged user'
           send_msg(receiver, text, ok_cb, false)
         else
-          result = "❱ "..do_lex(msg, result)
+          result = "❱ "..plugin.run(msg, result)
           print("to_type===>>>", to_type, "<<<")
           if to_type:find('chat') then
             _send_msg(receiver, result)
