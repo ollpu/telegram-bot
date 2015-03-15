@@ -58,20 +58,22 @@ function run(msg, matches)
 end
 
 function lex(msg, text)
+  local msg_check = msg
   local chat_id = tostring(msg.to.id)
-  if (text == nil) then
-    return nil
+  if not (text == nil) then
+    local s, e = text:find("%$%a+")
+    if (s == nil) then
+      return nil
+    end
+    local var = text:sub(s + 1, e)
+    local value = fetch_value(chat_id, var)
+    if (value == nil) then
+      value = "(unknown value " .. var .. ")"
+    end
+    return text:sub(0, s - 1) .. value .. text:sub(e + 1)
   end
-  local s, e = text:find("%$%a+")
-  if (s == nil) then
-    return nil
-  end
-  local var = text:sub(s + 1, e)
-  local value = fetch_value(chat_id, var)
-  if (value == nil) then
-    value = "(unknown value " .. var .. ")"
-  end
-  return text:sub(0, s - 1) .. value .. text:sub(e + 1)
+  return msg_check
+  
 end
 
 return {
