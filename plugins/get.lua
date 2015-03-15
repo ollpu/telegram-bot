@@ -17,15 +17,12 @@ end
 _values = read_file_values()
 
 function fetch_value(chat, value_name)
-  -- Chat non exists
-  if _values[chat] == nil then
+  if (_values[chat] == nil) then
     return nil
   end
-
-  if value_name == nil then
+  if (value_name == nil ) then
     return nil
   end 
-
   local value = _values[chat][value_name]
   return value
 end
@@ -60,24 +57,18 @@ function run(msg, matches)
    return get_value(chat_id, matches[1])
 end
 
-function lex(msg)
-
-  local text = msg.text
+function lex(msg, text)
   local chat_id = tostring(msg.to.id)
   local s, e = text:find("%$%a+")
-
-  if s then
-    local var = text:sub(s + 1, e)
-    local value = fetch_value(chat_id, var)
-    
-    if (value == nil) then
-      value = "(unknown value " .. var .. ")"
-    end
-
-    msg.text = text:sub(0, s - 1) .. value .. text:sub(e + 1)
+  if (s == nil) then 
+    return nil
   end
-
-  return msg
+  local var = text:sub(s + 1, e)
+  local value = fetch_value(chat_id, var)
+  if (value == nil) then
+    value = "(unknown value " .. var .. ")"
+  end
+  return text:sub(0, s - 1) .. value .. text:sub(e + 1)
 end
 
 return {

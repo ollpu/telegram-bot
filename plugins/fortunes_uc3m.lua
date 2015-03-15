@@ -9,7 +9,8 @@ end
 
 
 function run(msg, matches)
-  return get_fortunes_uc3m()
+  local results = lyliit(matches[1])
+  return stringlinks(results)
 end
 
 return {
