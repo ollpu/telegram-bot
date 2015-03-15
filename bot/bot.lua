@@ -59,43 +59,45 @@ function match_plugins(msg)
 end
 
 function match_plugin(plugin, msg)
-  local receiver = get_receiver(msg)
+  if not msg == nil then
+    local receiver = get_receiver(msg)
 
-  -- Go over patterns. If one matches is enought.
-  for k, pattern in pairs(plugin.patterns) do
-    -- print(msg.text, pattern)
-    matches = { string.match(msg.text, pattern) }
-    if matches[1] then
-      print("  matches", pattern)
-      -- Function exists
-      if plugin.run ~= nil then
-        -- If plugin is for privileged users only
-        if not user_allowed(plugin, msg) then
-          local text = '❱ This plugin requires privileged user'
-          send_msg(receiver, text, ok_cb, false)
-        else
-          result = "❱ "..plugin.run(msg, result)
-          print("to_type===>>>", to_type, "<<<")
-          if to_type:find('chat') then
-            _send_msg(receiver, result)
-            print("to_type=chat")
+    -- Go over patterns. If one matches is enought.
+    for k, pattern in pairs(plugin.patterns) do
+      -- print(msg.text, pattern)
+      matches = { string.match(msg.text, pattern) }
+      if matches[1] then
+        print("  matches", pattern)
+        -- Function exists
+        if plugin.run ~= nil then
+          -- If plugin is for privileged users only
+          if not user_allowed(plugin, msg) then
+            local text = '❱ This plugin requires privileged user'
+            send_msg(receiver, text, ok_cb, false)
           else
-            print("from=>", from, "<")
-            print("to=>", to, "<")
-            if not string.find(to, "50886815") then
-              _send_msg(msg.to.print_name, result)
-              print("tried sending to >", msg.from.print_name, "<")
-              print("from:me and not to:me")
-            else
-              print("from:me and to:me!")
+            result = "❱ "..plugin.run(msg, result)
+            print("to_type===>>>", to_type, "<<<")
+            if to_type:find('chat') then
               _send_msg(receiver, result)
+              print("to_type=chat")
+            else
+              print("from=>", from, "<")
+              print("to=>", to, "<")
+              if not string.find(to, "50886815") then
+                _send_msg(msg.to.print_name, result)
+                print("tried sending to >", msg.from.print_name, "<")
+                print("from:me and not to:me")
+              else
+                print("from:me and to:me!")
+                _send_msg(receiver, result)
+              end
+              print("to_type!=chat")
             end
-            print("to_type!=chat")
           end
         end
+        -- One matches
+        return
       end
-      -- One matches
-      return
     end
   end
 end
