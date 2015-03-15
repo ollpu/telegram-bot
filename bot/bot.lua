@@ -5,12 +5,9 @@ VERSION = '0.10.0'
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
   -- vardump(msg)
-  print(msg == nil)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
-    print("after_pre_proc", msg == nil)
     match_plugins(msg)
-    print("after_match_all", msg == nil)
   end
 end
 
@@ -77,9 +74,7 @@ function match_plugin(plugin, msg)
   for k, pattern in pairs(plugin.patterns) do
     -- print(msg.text, pattern)
     matches = { string.match(msg.text, pattern) }
-    print("matches == ", matches)
     if matches[1] then
-      print("  matches", pattern)
       -- Function exists
       if plugin.run ~= nil then
         -- If plugin is for privileged users only
@@ -88,7 +83,7 @@ function match_plugin(plugin, msg)
           send_msg(receiver, text, ok_cb, false)
         else
           result = plugin.run(msg, matches)
-          if result then
+          if result ~= nil then
             result = "❱ "..result
             print("to_type===>>>", to_type, "<<<")
             if to_type:find('chat') then
