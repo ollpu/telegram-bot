@@ -87,23 +87,26 @@ function match_plugin(plugin, msg)
           local text = '❱ This plugin requires privileged user'
           send_msg(receiver, text, ok_cb, false)
         else
-          result = "❱ "..plugin.run(msg, matches)
-          print("to_type===>>>", to_type, "<<<")
-          if to_type:find('chat') then
-            _send_msg(receiver, result)
-            print("to_type=chat")
-          else
-            print("from=>", from, "<")
-            print("to=>", to, "<")
-            if not string.find(to, "50886815") then
-              _send_msg(msg.to.print_name, result)
-              print("tried sending to >", msg.from.print_name, "<")
-              print("from:me and not to:me")
-            else
-              print("from:me and to:me!")
+          result = plugin.run(msg, matches)
+          if result then
+            result = "❱ "..result
+            print("to_type===>>>", to_type, "<<<")
+            if to_type:find('chat') then
               _send_msg(receiver, result)
+              print("to_type=chat")
+            else
+              print("from=>", from, "<")
+              print("to=>", to, "<")
+              if not string.find(to, "50886815") then
+                _send_msg(msg.to.print_name, result)
+                print("tried sending to >", msg.from.print_name, "<")
+                print("from:me and not to:me")
+              else
+                print("from:me and to:me!")
+                _send_msg(receiver, result)
+              end
+              print("to_type!=chat")
             end
-            print("to_type!=chat")
           end
         end
       end
