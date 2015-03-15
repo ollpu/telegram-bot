@@ -68,6 +68,10 @@ end
 
 function match_plugin(plugin, msg)
   local receiver = get_receiver(msg)
+  local text = msg.text
+  local to = msg.to.id
+  local from = msg.from.id
+  local to_type = msg.to.type
 
   -- Go over patterns. If one matches is enought.
   for k, pattern in pairs(plugin.patterns) do
