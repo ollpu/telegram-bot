@@ -10,6 +10,7 @@ function on_msg_receive (msg)
     msg = pre_process_msg(msg)
     print("after_pre_proc", msg == nil)
     match_plugins(msg)
+    print("after_match_all", msg == nil)
   end
 end
 
