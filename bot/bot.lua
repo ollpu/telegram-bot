@@ -1,21 +1,28 @@
+http = require("socket.http")
+https = require("ssl.https")
+URL = require("socket.url")
+json = (loadfile "./libs/JSON.lua")()
+serpent = (loadfile "./libs/serpent.lua")()
 require("./bot/utils")
 
-VERSION = '0.10.0'
+VERSION = '0.9.4'
 
--- This function is called when tg receive a msg
 function on_msg_receive (msg)
-  -- vardump(msg)
-  if msg_valid(msg) then
-    msg = pre_process_msg(msg)
-    match_plugins(msg)
+  vardump(msg)
+
+  if msg_valid(msg) == false then
+    return
   end
+
+  do_action(msg)
 end
 
 function ok_cb(extra, success, result)
 end
 
-function on_binlog_replay_end()
+function on_binlog_replay_end ()
   started = 1
+  -- Uncomment the line to enable cron plugins.
   postpone (cron_plugins, false, 60*5.0)
   -- See plugins/ping.lua as an example for cron
 
@@ -29,8 +36,8 @@ end
 function msg_valid(msg)
   -- Dont process outgoing messages
   if msg.out then
-    print("Not valid, msg from us")
-    return false
+    print("@override, user wants, msg from us, pass")
+    
   end
   if msg.date < now then
     print("Not valid, old msg")
@@ -40,80 +47,90 @@ function msg_valid(msg)
     print("Not valid, readed")
     return false
   end
-  return true
 end
 
-
-function do_lex(msg)
+function do_lex(msg, text)
   -- Plugins which implements lex.
-  for name, plugin in pairs(plugins) do
-    if plugin.lex ~= nil then
-      msg = plugin.lex(msg)
-    end
-  end
-
-  return msg
-end
-
--- Go over enabled plugins patterns.
-function match_plugins(msg)
-  for name, plugin in pairs(plugins) do
-    match_plugin(plugin, msg)
-  end
-end
-
-function match_plugin(plugin, msg)
-  local receiver = get_receiver(msg)
-
-  -- Go over patterns. If one matches is enought.
-  for k, pattern in pairs(plugin.patterns) do
-    -- print(msg.text, pattern)
-    matches = { string.match(msg.text, pattern) }
-    if matches[1] then
-      mark_read(receiver, ok_cb, false)
-      print("  matches", pattern)
-      -- Function exists
-      if plugin.run ~= nil then
-        -- If plugin is for privileged users only
-        if not user_allowed(plugin, msg) then
-          local text = 'This plugin requires privileged user'
-          send_msg(receiver, text, ok_cb, false)
-        else
-          -- Send the returned text by run function.
-          result = plugin.run(msg, matches)
-          if result ~= nil then
-            _send_msg(receiver, result)
-          end
-        end
+  for name, desc in pairs(plugins) do
+    if (desc.lex ~= nil) then
+      result = desc.lex(msg, text)
+      if (result ~= nil) then
+        print ("Mutating to " .. result)
+        text = result
       end
-      -- One matches
-      return
     end
   end
+  return text
 end
 
--- Check if user can use the plugin
-function user_allowed(plugin, msg)
-  if plugin.privileged and not is_sudo(msg) then
-    return false
-  end
-  return true
+function trim(s)
+  return s:match "^%s*(.-)%s*$"
 end
 
---Apply lex and other text.
-function pre_process_msg(msg)
-
-  if msg.text == nil then
+-- Where magic happens
+function do_action(msg)
+  local receiver = get_receiver(msg)
+  local text = msg.text
+  local to = msg.to.id
+  local from = msg.from.id
+  local to_type = msg.to.type
+  
+  status_offline ()
+  
+  if text == nil then
     -- Not a text message, make text the same as what tg shows so
     -- we can match on it. Maybe a plugin activated my media type.
     if msg.media ~= nil then
-      msg.text = '['..msg.media.type..']'
+      text = '['..msg.media.type..']'
     end
   end
 
-  msg = do_lex(msg)
+  -- We can't do anything
+  if msg.text == nil then return false end
 
-  return msg
+  msg.text = do_lex(msg, text)
+
+  for name, desc in pairs(plugins) do
+    -- print("Trying module", name)
+    for k, pattern in pairs(desc.patterns) do
+      -- print("Trying", text, "against", pattern)
+      matches = { string.match(text, pattern) }
+      if matches[1] then
+        -- mark_read(get_receiver(msg), ok_cb, false)
+        print("  matches", pattern)
+        if desc.run ~= nil then
+          -- If plugin is for privileged user
+          if desc.privileged and not is_sudo(msg) then
+            local text = ':BOT: This plugin requires privileged user'
+            send_msg(receiver, text, ok_cb, false)
+          else 
+            result = desc.run(msg, matches)
+            -- print("  sending", result)
+            if (result) then
+              result = "❱ "..do_lex(msg, result)
+              print("to_type===>>>", to_type, "<<<")
+              if to_type:find('chat') then
+              	_send_msg(receiver, result)
+              	print("to_type=chat")
+              else
+              	print("from=>", from, "<")
+              	print("to=>", to, "<")
+              	if not string.find(to, "50886815") then
+              	  _send_msg(msg.to.print_name, result)
+              	  print("tried sending to >", msg.from.print_name, "<")
+              	  print("from:me and not to:me")
+              	else
+              	  print("from:me and to:me!")
+              	  _send_msg(receiver, result)
+              	end
+      		print("to_type!=chat")
+              end
+            end
+          end
+        end
+      end
+    end
+  end
 end
 
 -- If text is longer than 4096 chars, send multiple msg.
@@ -138,8 +155,7 @@ function save_config( )
   print ('saved config into ./data/config.lua')
 end
 
--- Returns the config from config.lua file.
--- If file doesnt exists, create it.
+
 function load_config( )
   local f = io.open('./data/config.lua', "r")
   -- If config.lua doesnt exists
@@ -211,18 +227,18 @@ end
 function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
-    local t = loadfile("plugins/"..v..'.lua')()
+    t = loadfile("plugins/"..v..'.lua')()
     table.insert(plugins, t)
   end
 end
 
--- Call and postpone execution for cron plugins
+-- Cron all the enabled plugins
 function cron_plugins()
 
-  for name, plugin in pairs(plugins) do
-    -- Only plugins with cron function
-    if plugin.cron ~= nil then
-      plugin.cron()
+  for name, desc in pairs(plugins) do
+    if desc.cron ~= nil then
+      print(desc.description)
+      desc.cron()
     end
   end
 
