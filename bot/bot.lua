@@ -73,6 +73,7 @@ function match_plugin(plugin, msg)
   for k, pattern in pairs(plugin.patterns) do
     -- print(msg.text, pattern)
     matches = { string.match(msg.text, pattern) }
+    print(matches)
     if matches[1] then
       print("  matches", pattern)
       -- Function exists
