@@ -8,6 +8,7 @@ function on_msg_receive (msg)
   print(msg == nil)
   if msg_valid(msg) then
     msg = pre_process_msg(msg)
+    print("after_pre_proc", msg == nil)
     match_plugins(msg)
   end
 end
