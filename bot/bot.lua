@@ -101,6 +101,8 @@ function match_plugin(plugin, msg)
         return
       end
     end
+  else
+    print("MSG IS NIL!")
   end
 end
 
