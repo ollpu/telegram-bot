@@ -42,9 +42,10 @@ end
 
 function catch_url(msg)
   local to_id = tostring(msg.to.id)
-
+  
   if captured_URL_table == nil then
     captured_URL_table = {}
+    print("cUt was nil!")
   end
   
   captured_URL_table[to_id] = matches[1]
