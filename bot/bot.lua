@@ -33,7 +33,7 @@ function msg_valid(msg)
     return false
   end
   if msg.unread == 0 then
-    print("Not valid, readed")
+    print("Not valid, read")
     return false
   end
   return true
