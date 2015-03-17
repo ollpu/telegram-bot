@@ -33,7 +33,7 @@ function run(msg, matches)
     results = catch_url(msg)
   end
   return results
-  http://youtube.com/asd
+  
 end
 
 function catch_url(msg)
