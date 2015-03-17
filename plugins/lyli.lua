@@ -33,7 +33,6 @@ function run(msg, matches)
       else results = onfail end
     else results = onfail end
   elseif string.match(msg.text, "(https?://[%w-_%.%?%.:/%+=&]+)") and string.match(msg.text, "^❱") == nil then
-    print("Found URL!")
     results = catch_url(msg)
   end
   return results
@@ -42,7 +41,8 @@ end
 
 function catch_url(msg)
   local to_id = tostring(msg.to.id)
-  
+
+  print("Found URL!")  
   if captured_URL_table == nil then
     captured_URL_table = {}
     print("cUt was nil!")
