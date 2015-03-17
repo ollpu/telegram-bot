@@ -28,11 +28,12 @@ function run(msg, matches)
         results = lyliit(captured_URL_table[to_id])
       end
     end
-  elseif string.match(msg.text, "\b(https?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])") and not string.match(msg.text, "^❱") then
+  elseif string.match(msg.text, "\b(https?://[-A-Z0-9+&@#/%?=~_|!:,.;]*)") and not string.match(msg.text, "^❱") then
     print("Found URL!")
     results = catch_url(msg)
   end
   return results
+  http://youtube.com/asd
 end
 
 function catch_url(msg)
@@ -57,7 +58,7 @@ return {
   patterns = {
     "^!lyli (.*)$",
     "^!pili (.*)$",
-    "\b(https?://[-A-Z0-9+&@#/%?=~_|!:,.;]*[A-Z0-9+&@#/%=~_|])",
+    "\b(https?://[-A-Z0-9+&@#/%?=~_|!:,.;]*)",
     "^!lyli$"
   },
   run = run
