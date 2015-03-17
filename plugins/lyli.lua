@@ -49,6 +49,7 @@ function catch_url(msg)
   end
   
   captured_URL_table[to_id] = matches[1]
+  print("matches[1] == "..matches[1])
   
   return "Use !lyli to shorten that link!"
 end
