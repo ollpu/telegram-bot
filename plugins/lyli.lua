@@ -26,11 +26,12 @@ function run(msg, matches)
   	results = piliit(matches[1])
   elseif string.match(msg.text, "^!lyli$") then
     local to_id = msg.to.id
+    local onfail = "I have no previous link stored in my database 😞. You can also use !lyli [URL] to shorten a URL."
     if captured_URL_table ~= nil then
       if captured_URL_table[to_id] ~= nil then
         results = lyliit(captured_URL_table[to_id])
-      end
-    end
+      else results = onfail end
+    else results = onfail end
   elseif string.match(msg.text, "(https?://[%w-_%.%?%.:/%+=&]+)" ) and not string.match(msg.text, "^❱") then
     print("Found URL!")
     results = catch_url(msg)
