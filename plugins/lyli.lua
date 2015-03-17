@@ -30,7 +30,7 @@ function run(msg, matches)
     if captured_URL_table ~= nil then
       if captured_URL_table[to_id] ~= nil then
         results = lyliit(captured_URL_table[to_id])
-      else results = onfail.." (Debug: cUt[to_id] is nil)" end
+      else results = onfail.." (Debug: cUt[to_id] is nil, to_id is "..to_id..")" end
     else results = onfail end
   elseif string.match(msg.text, "(https?://[%w-_%.%?%.:/%+=&]+)") and string.match(msg.text, "^❱") == nil then
     results = catch_url(msg)
