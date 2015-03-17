@@ -1,7 +1,9 @@
 local captured_URL_table
 function lyliit(targ)
-  targ = string.gsub(targ, '"', '\\"')
+  -- Properly escape the input
+  targ = string.gsub(targ, '(["|\'|\\{|\\}])', '\\%1')
   local handle = io.popen("curl -H 'Content-Type: application/json' -X POST -d '{\"url\": \""..targ.."\"}' api.lyli.fi")
+  print("Check escaping://BEGIN//"..targ.."//END//")
   local result = handle:read("*a")
   handle:close()
   return result
