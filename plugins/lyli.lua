@@ -1,6 +1,6 @@
 local captured_URL_table
 function lyliit(targ)
-  
+  targ = string.gsub(targ, '"', '\"')
   local handle = io.popen("curl -H 'Content-Type: application/json' -X POST -d '{\"url\": \""..targ.."\"}' api.lyli.fi")
   local result = handle:read("*a")
   handle:close()
@@ -8,6 +8,7 @@ function lyliit(targ)
 end
 
 function piliit(from)
+	from = string.gsub(from, '"', '\"')
 	local handle = io.popen("curl api.lyli.fi/"..from)
   	local result = handle:read("*a")
   	handle:close()
