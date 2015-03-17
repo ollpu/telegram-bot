@@ -30,7 +30,7 @@ function run(msg, matches)
     if captured_URL_table ~= nil then
       if captured_URL_table[to_id] ~= nil then
         results = lyliit(captured_URL_table[to_id])
-      else results = onfail end
+      else results = onfail.." (Debug: cUt[to_id] is nil)" end
     else results = onfail end
   elseif string.match(msg.text, "(https?://[%w-_%.%?%.:/%+=&]+)") and string.match(msg.text, "^❱") == nil then
     results = catch_url(msg)
@@ -42,14 +42,14 @@ end
 function catch_url(msg)
   local to_id = tostring(msg.to.id)
 
-  print("Found URL!")  
+  print("Found URL!")
   if captured_URL_table == nil then
     captured_URL_table = {}
     print("cUt was nil!")
   end
   
   captured_URL_table[to_id] = matches[1]
-
+  
   return "Use !lyli to shorten that link!"
 end
 
