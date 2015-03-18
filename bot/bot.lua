@@ -84,7 +84,6 @@ function match_plugin(plugin, msg)
         else
           result = plugin.run(msg, matches)
           if result ~= nil then
-            result = "❱ "..result
             print("to_type===>>>", to_type, "<<<")
             if to_type:find('chat') then
               _send_msg(receiver, result)
@@ -147,7 +146,7 @@ function _send_msg( destination, text)
     local final_c = i * msg_text_max
     -- dont worry about if text length < msg_text_max
     local text_msg = string.sub(text,inital_c,final_c)
-    send_msg(destination, text_msg, ok_cb, false)
+    send_msg(destination, "❱ "..text_msg, ok_cb, false)
   end
 end
 
