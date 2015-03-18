@@ -43,6 +43,7 @@ function run(msg, matches)
 end
 
 function catch_url(msg)
+  local toreturn = nil
   local to_id = tostring(msg.to.id)
 
   print("Found URL!")
@@ -50,11 +51,16 @@ function catch_url(msg)
     captured_URL_table = {}
     print("cUt was nil!")
   end
+  --Advertize the quick-shortening functionality only on the first time
+  --we catch a URL.
+  if captured_URL_table[tostring(to_id)] == nil then
+    toreturn = "Use !lyli to shorten that link!"
+  end
   
   captured_URL_table[tostring(to_id)] = matches[1]
   print("cUt[t/i] == "..captured_URL_table[to_id]..", and to_id == "..to_id)
   
-  return "Use !lyli to shorten that link!"
+  return toreturn
 end
 
 return {
