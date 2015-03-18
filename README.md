@@ -3,6 +3,25 @@ telegram-bot
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
+##Modifications by @ollpu
+####(I'm @ollpu in telegram too)
+ - Also listen to commands sent by me (yep, I didn't bother to make another account for the bot)
+    - Protect from command injection and other nasties by appending "❱ " to the beginning of all messages
+ - lyli plugin
+    - Creates shortened links with !lyli [long url] using the [lyli.fi](https://lyli.fi/) service
+    - Also stores the most recent link posted to all (specific) chats, so that users can quicly "!lyli" to shorten that link
+    - !pili [keyword] to get the target of lyli links (not lyli.fi/keyword, just keyword)
+ - !info command
+    - Displays some information about the bot and links to this repo
+ - shell plugin
+    - You read right — it's pure uncensored, unescaped unix commands!
+    - Go out on a limb and reboot the Raspberry Pi this bot is running on with "!sh sudo reboot"
+    - Sadly this plugin requires priviliged access.
+    - There might be a lot of security risks with this implementation, but I don't really care, as the Raspberry Pi has nothing important on it. If you manage to do something to my other computers in the same network, atleast I'll be convieniently notified while you do so :smile:
+ - This fork (atleast master branch, maybe in the future I'll have a for-pr branch) is not intended for merge back to the form origin.
+
+####The original README shall continiue below
+
 Multimedia
 ----------
 - When user sends image (png, jpg, jpeg) URL download and send it to origin.
