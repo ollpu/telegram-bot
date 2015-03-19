@@ -18,6 +18,10 @@ A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
     - Go out on a limb and reboot the Raspberry Pi this bot is running on with "!sh sudo reboot"
     - Sadly this plugin requires priviliged access.
     - There might be a lot of security risks with this implementation, but I don't really care, as the Raspberry Pi has nothing important on it. If you manage to do something to my other computers in the same network, atleast I'll be convieniently notified while you do so :smile:
+ - 100% more awesome quotes plugin
+    - Add public quote functionality
+      - Use !addpublicquote to add quotes retrievable in all chats
+    - Possible feature of the future: !listquotes and retrieve specific quotes with !quote [id]
  - This fork (atleast the master branch, maybe in the future I'll have a for-pr branch) is not intended for merge back to the original repo.
 
 ####The original README shall continiue below
