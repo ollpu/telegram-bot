@@ -22,7 +22,7 @@ A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
     - Add public quote functionality
       - Use !addpublicquote to add quotes retrievable in all chats
     - Possible feature of the future: !listquotes and retrieve specific quotes with !quote [id]
- - This fork (atleast the master branch, maybe in the future I'll have a for-pr branch) is not intended for merge back to the original repo.
+ - This fork (atleast the master branch, I have a for-pr branch inteded for PRs) is not intended for merge back to the original repo.
 
 ####The original README shall continiue below
 
