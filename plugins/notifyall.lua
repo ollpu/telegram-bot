@@ -1,6 +1,6 @@
 
 function run(msg, matches)
-  return chat_info(msg.to.id)
+  return tostring(chat_info(msg.to.id))
 end
 
 return {
