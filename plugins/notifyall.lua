@@ -6,6 +6,6 @@ end
 return {
     description = "Notifies all users in this chat.",
     usage = "!notifyall: notify all people in this chat",
-    patterns = {"^!notfyall$"},
+    patterns = {"^!notifyall$"},
     run = run
 }
