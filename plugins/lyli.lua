@@ -16,6 +16,15 @@ function piliit(from)
   	return result
 end
 
+function lylic(targ, name)
+  targ = string.gsub(targ, '(["|\'|\\{|\\}])', '\\%1')
+  name = string.gsub(name, '(["|\'|\\{|\\}])', '\\%1')
+  local handle = io.popen("curl -H 'Content-Type: application/json' -X POST -d '{\"url\": \""..targ.."\", \"name\": \""..name.."\"}' api.lyli.fi")
+  local result = handle:read("*a")
+  handle:close()
+  return result
+end
+
 
 function run(msg, matches)
   local results = "lyli plugin is confused."
@@ -29,6 +38,14 @@ function run(msg, matches)
     if captured_URL_table ~= nil then
       if captured_URL_table[tostring(to_id)] ~= nil then
         results = lyliit(captured_URL_table[tostring(to_id)])
+      else results = onfail.." (Debug: cUt[to_id] is nil, to_id is "..to_id..")" end
+    else results = onfail end
+  elseif string.match(msg.text, "^!lylic (.*)$") then
+    local to_id = msg.to.id
+    local onfail = "I have no previous link stored in my database 😞. You can also use !lyli [URL] to shorten a URL."
+    if captured_URL_table ~= nil then
+      if captured_URL_table[tostring(to_id)] ~= nil then
+        results = lylic(captured_URL_table[tostring(to_id)], matches[1])
       else results = onfail.." (Debug: cUt[to_id] is nil, to_id is "..to_id..")" end
     else results = onfail end
   elseif string.match(msg.text, "(https?://[%w-_%.%?%.:/%+=&]+)") then
@@ -63,13 +80,15 @@ return {
   usage =  {
     "!lyli [url]: Shortens a long URL using lyli.fi.",
     "!pili [text]: Gets the target of link lyli.fi/text",
-    "!lyli: Shortens the last URL sent to this chat"
+    "!lyli: Shortens the last URL sent to this chat",
+    "!lylic [name]: Shortens the last URL sent to this chat with custon name"
   },
   patterns = {
     "^!lyli (.*)$",
     "^!pili (.*)$",
     "(https?://[%w-_%.%?%.:/%+=&]+)",
-    "^!lyli$"
+    "^!lyli$",
+    "^!lylic (.*)$"
   },
   run = run
 }
