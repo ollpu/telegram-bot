@@ -8,7 +8,7 @@ A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
  - Also listen to commands sent by me (yep, I didn't bother to make another account for the bot)
     - Protect from command injection and other nasties by appending "❱ " to the beginning of all messages
  - lyli plugin
-    - Creates shortened links with !lyli [long url] using the [lyli.fi](https://lyli.fi/) service
+    - Creates shortened links with !lyli [long url] using the [lyli.fi](http://lyli.fi/) service
     - Also stores the most recent link posted to all (specific) chats, so that users can quicly "!lyli" to shorten that link
     - !pili [keyword] to get the target of lyli links (not lyli.fi/keyword, just keyword)
  - !info command
