@@ -1,7 +1,7 @@
 telegram-bot 
 ============
 
-[![](https://travis-ci.org/yagop/telegram-bot.svg?branch=master)](https://travis-ci.org/yagop/telegram-bot) 
+[![](https://travis-ci.org/ollpu/telegram-bot.svg?branch=master)](https://travis-ci.org/ollpu/telegram-bot) 
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
