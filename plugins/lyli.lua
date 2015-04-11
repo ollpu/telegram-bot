@@ -25,6 +25,10 @@ function lylic(targ, name)
   return result
 end
 
+function lyli_clean(str)
+  return string.gsub(str, '["|\\{|\\}]', '')
+end
+
 
 function run(msg, matches)
   local results = "lyli plugin is confused."
@@ -53,7 +57,7 @@ function run(msg, matches)
       results = catch_url(msg)
     else return nil end
   end
-  return results
+  return lyli_clean(results)
   
 end
 
