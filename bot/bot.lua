@@ -7,9 +7,10 @@ function on_msg_receive (msg)
   local receiver = get_receiver(msg)
   -- vardump(msg)
   if msg_valid(msg) then
+    print("Before pre-proc, msg = ", msg)
     msg = pre_process_msg(msg)
+    print("After pre-proc, msg = ", msg)
     match_plugins(msg)
-    mark_read(receiver, ok_cb, false)
   end
 end
 
@@ -59,7 +60,7 @@ end
 -- Go over enabled plugins patterns.
 function match_plugins(msg)
   for name, plugin in pairs(plugins) do
-    match_plugin(plugin, msg)
+    match_plugin(plugin, name, msg)
   end
 end
 
@@ -102,9 +103,6 @@ function match_plugin(plugin, plugin_name, msg)
       if plugin.run then
         -- If plugin is for privileged users only
         if not warns_user_not_allowed(plugin, msg) then
-          local text = '❱ This plugin requires privileged user'
-          send_msg(receiver, text, ok_cb, false)
-        else
           result = plugin.run(msg, matches)
           if result ~= nil then
             print("to_type===>>>", to_type, "<<<")

@@ -387,7 +387,7 @@ end
 -- Returns true if user was warned and false if not warned (is allowed)
 function warns_user_not_allowed(plugin, msg)
   if not user_allowed(plugin, msg) then
-    local text = 'This plugin requires privileged user'
+    local text = '❱ This plugin requires privileged user'
     local receiver = get_receiver(msg)
     send_msg(receiver, text, ok_cb, false)
     return true
