@@ -9,7 +9,7 @@ function read_file_values( )
     serialize_to_file({}, _file_values)
   else
     print ('Values loaded: '.._file_values)
-    f:close()
+    f:close() 
   end
   return loadfile (_file_values)()
 end
@@ -17,12 +17,15 @@ end
 _values = read_file_values()
 
 function fetch_value(chat, value_name)
-  if (_values[chat] == nil) then
+  -- Chat non exists
+  if _values[chat] == nil then
     return nil
   end
-  if (value_name == nil ) then
+
+  if value_name == nil then
     return nil
-  end
+  end 
+
   local value = _values[chat][value_name]
   return value
 end
@@ -41,7 +44,7 @@ function get_value(chat, value_name)
       text = text..key.." = "..value.."\n"
     end
     return text
-  end
+  end 
   local value = _values[chat][value_name]
   if ( value == nil) then
     return "Can't find "..value_name
@@ -53,11 +56,12 @@ function run(msg, matches)
   local chat_id = tostring(msg.to.id)
   if matches[1] == "!get" then
     return get_value(chat_id, nil)
-  end
+  end  
    return get_value(chat_id, matches[1])
 end
 
-function lex(msg, text)
+function lex(msg)
+
   if msg.text then
     local text = msg.text
     local chat_id = tostring(msg.to.id)
@@ -74,12 +78,12 @@ function lex(msg, text)
       msg.text = text:sub(0, s - 1) .. value .. text:sub(e + 1)
     end
   end
-  return msg_check
-  
+
+  return msg
 end
 
 return {
-    description = "Retrieves variables saved with !set",
+    description = "Retrieves variables saved with !set", 
     usage = "!get (value_name): Returns the value_name value.",
     patterns = {
       "^!get (%a+)$",
@@ -87,3 +91,4 @@ return {
     run = run,
     pre_process = lex
 }
+

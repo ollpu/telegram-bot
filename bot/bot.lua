@@ -58,13 +58,8 @@ end
 
 -- Go over enabled plugins patterns.
 function match_plugins(msg)
-  print("msg = ", msg)
-  if msg ~= nil then
-    for name, plugin in pairs(plugins) do
-      match_plugin(plugin, msg)
-    end
-  else
-    print("MSG IS NIL!")
+  for name, plugin in pairs(plugins) do
+    match_plugin(plugin, msg)
   end
 end
 
