@@ -54,14 +54,14 @@ function run(msg, matches)
     else results = onfail end
   elseif string.match(msg.text, "(https?://[%w-_%.%?%.:/%+=&]+)") then
     if not string.match(msg.text, "^❱") then
-      results = catch_url(msg)
+      results = catch_url(msg, matches)
     else return nil end
   end
   return lyli_clean(results)
   
 end
 
-function catch_url(msg)
+function catch_url(msg, matches)
   local toreturn = nil
   local to_id = tostring(msg.to.id)
   
