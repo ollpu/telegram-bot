@@ -1,16 +1,28 @@
+package.path = package.path .. ';.luarocks/share/lua/5.2/?.lua'
+  ..';.luarocks/share/lua/5.2/?/init.lua'
+package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
+
 require("./bot/utils")
 
-VERSION = '0.11.3'
+VERSION = '0.12.1'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
+  
+  if not started then
+    return
+  end
+
   local receiver = get_receiver(msg)
+
   -- vardump(msg)
   if msg_valid(msg) then
     print("Before pre-proc, msg = ", msg)
     msg = pre_process_msg(msg)
-    print("After pre-proc, msg = ", msg)
-    match_plugins(msg)
+    if msg then
+      match_plugins(msg)
+      mark_read(receiver, ok_cb, false)
+    end
   end
 end
 
@@ -18,7 +30,7 @@ function ok_cb(extra, success, result)
 end
 
 function on_binlog_replay_end()
-  started = 1
+  started = true
   postpone (cron_plugins, false, 60*5.0)
   -- See plugins/ping.lua as an example for cron
 
@@ -34,12 +46,38 @@ function msg_valid(msg)
 
   -- Before bot was started
   if msg.date < now then
-    print("Not valid, old msg")
+    print('\27[36mNot valid: old msg\27[39m')
     return false
   end
-  
+
   if msg.unread == 0 then
-    print("Not valid, read")
+    print('\27[36mNot valid: readed\27[39m')
+    return false
+  end
+
+  if msg.service then
+    print('\27[36mNot valid: service\27[39m')
+    return false
+  end
+
+  if not msg.to.id then
+    print('\27[36mNot valid: To id not provided\27[39m')
+    return false
+  end
+
+  if not msg.from.id then
+    print('\27[36mNot valid: From id not provided\27[39m')
+    return false
+  end
+
+  if msg.from.id == our_id then
+    print('\27[36mNot valid: Msg from our id\27[39m')
+    return false
+  end
+
+  if msg.to.type == 'encr_chat' then
+    vardump(msg)
+    print('\27[36mNot valid: Encripted chat\27[39m')
     return false
   end
 
@@ -49,7 +87,7 @@ end
 -- Apply plugin.pre_process function
 function pre_process_msg(msg)
   for name,plugin in pairs(plugins) do
-    if plugin.pre_process then
+    if plugin.pre_process and msg then
       msg = plugin.pre_process(msg)
     end
   end
@@ -239,3 +277,4 @@ end
 our_id = 0
 now = os.time()
 math.randomseed(now)
+started = false
