@@ -71,7 +71,7 @@ function catch_url(msg, matches)
   --Advertize the quick-shortening functionality only on the first time
   --we catch a URL.
   if captured_URL_table[tostring(to_id)] == nil then
-    toreturn = "Use !lyli (or !lylic [name] for a custom name) to shorten that link!"
+    --toreturn = "Use !lyli (or !lylic [name] for a custom name) to shorten that link!"
   end
   
   captured_URL_table[tostring(to_id)] = matches[1]
