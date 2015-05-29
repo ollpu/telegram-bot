@@ -100,7 +100,7 @@ end
 
 return {
     description = "Save quote",
-    description = "Quote plugin, you can create and retrieves random quotes",
+    description = "Quote plugin, you can create and retrieve random quotes",
     usage = {
         "!addquote [msg] - Adds a private quote, only retrievable in this chat",
         "!quote - Displays a quote which can be private or public",

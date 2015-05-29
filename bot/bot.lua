@@ -4,11 +4,10 @@ package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
 
-VERSION = '0.12.1'
+VERSION = '0.12.2'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
-  
   if not started then
     return
   end
@@ -16,6 +15,7 @@ function on_msg_receive (msg)
   local receiver = get_receiver(msg)
 
   -- vardump(msg)
+  msg = pre_process_service_msg(msg)
   if msg_valid(msg) then
     print("Before pre-proc, msg = ", msg)
     msg = pre_process_msg(msg)
@@ -32,7 +32,7 @@ end
 function on_binlog_replay_end()
   started = true
   postpone (cron_plugins, false, 60*5.0)
-  -- See plugins/ping.lua as an example for cron
+  -- See plugins/isup.lua as an example for cron
 
   _config = load_config()
 
@@ -55,11 +55,6 @@ function msg_valid(msg)
     return false
   end
 
-  if msg.service then
-    print('\27[36mNot valid: service\27[39m')
-    return false
-  end
-
   if not msg.to.id then
     print('\27[36mNot valid: To id not provided\27[39m')
     return false
@@ -76,12 +71,34 @@ function msg_valid(msg)
   --end
 
   if msg.to.type == 'encr_chat' then
-    vardump(msg)
-    print('\27[36mNot valid: Encripted chat\27[39m')
+    print('\27[36mNot valid: Encrypted chat\27[39m')
+    return false
+  end
+
+  if msg.from.id == 777000 then
+    print('\27[36mNot valid: Telegram message\27[39m')
     return false
   end
 
   return true
+end
+
+--
+function pre_process_service_msg(msg)
+   if msg.service then
+      local action = msg.action or {type=""}
+      -- Double ! to discriminate of normal actions
+      msg.text = "!!tgservice " .. action.type
+
+      -- wipe the data to allow the bot to read service messages
+      if msg.out then
+         msg.out = false
+      end
+      if msg.from.id == our_id then
+         msg.from.id = 0
+      end
+   end
+   return msg
 end
 
 -- Apply plugin.pre_process function
@@ -127,7 +144,7 @@ function match_plugin(plugin, plugin_name, msg)
   local from = msg.from.id
   local to_type = msg.to.type
 
-  -- Go over patterns. If one matches is enought.
+  -- Go over patterns. If one matches it's enough.
   for k, pattern in pairs(plugin.patterns) do
     local matches = match_pattern(pattern, msg.text)
     if matches then
@@ -180,10 +197,10 @@ function save_config( )
 end
 
 -- Returns the config from config.lua file.
--- If file doesnt exists, create it.
+-- If file doesn't exist, create it.
 function load_config( )
   local f = io.open('./data/config.lua', "r")
-  -- If config.lua doesnt exists
+  -- If config.lua doesn't exist
   if not f then
     print ("Created new config file: data/config.lua")
     create_config()
@@ -199,7 +216,7 @@ end
 
 -- Create a basic config.json file and saves it.
 function create_config( )
-  -- A simple config with basic plugins and ourserves as priviled user
+  -- A simple config with basic plugins and ourselves as privileged user
   config = {
     enabled_plugins = {
       "9gag",
@@ -254,8 +271,17 @@ end
 function load_plugins()
   for k, v in pairs(_config.enabled_plugins) do
     print("Loading plugin", v)
-    local t = loadfile("plugins/"..v..'.lua')()
-    plugins[v] = t
+
+    local ok, err =  pcall(function()
+      local t = loadfile("plugins/"..v..'.lua')()
+      plugins[v] = t
+    end)
+
+    if not ok then
+      print('\27[31mError loading plugin '..v..'\27[39m')
+      print('\27[31m'..err..'\27[39m')
+    end
+
   end
 end
 
