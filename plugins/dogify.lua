@@ -1,7 +1,7 @@
 local function run(msg, matches)
    local base = "http://dogr.io/"
    local path = string.gsub(matches[1], " ", "")
-   local url = base .. path .. '.png'
+   local url = base .. path .. '.png?split=false'
    local urlm = "https?://[%w-_%.%?%.:/%+=&]+"
 
    if string.match(url, urlm) == url then
