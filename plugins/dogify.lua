@@ -2,7 +2,7 @@ local function run(msg, matches)
    local base = "http://dogr.io/"
    local path = string.gsub(matches[1], " ", "%%20")
    local url = base .. path .. '.png?split=false&.png'
-   local urlm = "https?://[%%%w-_%.%?%.:/%+=&]+"
+   local urlm = "https?://[%%%w-_%.%?%.:/%+=&\128-\244]+"
 
    if string.match(url, urlm) == url then
       local receiver = get_receiver(msg)
