@@ -4,7 +4,7 @@ package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
 
-VERSION = '0.12.2'
+VERSION = '0.13.0'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -105,6 +105,7 @@ end
 function pre_process_msg(msg)
   for name,plugin in pairs(plugins) do
     if plugin.pre_process and msg then
+      print('Preprocess', name)
       msg = plugin.pre_process(msg)
     end
   end
