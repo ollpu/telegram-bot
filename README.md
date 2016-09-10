@@ -8,8 +8,12 @@ telegram-bot
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
+###The state of this project
+After the introduction of the Telegram Bot API, I slowly stopped running the bot on my account. I haven't made any changes to it since.
+
 ##Modifications by @ollpu
 ####(I'm @ollpu in telegram too)
+
  - Also listen to commands sent by me (yep, I didn't bother to make another account for the bot)
     - Protect from command injection and other nasties by appending "❱ " to the beginning of all messages
  - lyli plugin
