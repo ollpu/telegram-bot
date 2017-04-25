@@ -8,11 +8,11 @@ telegram-bot
 
 A Telegram Bot based on plugins using [tg](https://github.com/vysheng/tg).
 
-###The state of this project
+### The state of this project
 After the introduction of the Telegram Bot API, I slowly stopped running the bot on my account. I haven't made any changes to it since.
 
-##Modifications by @ollpu
-####(I'm @ollpu in telegram too)
+## Modifications by @ollpu
+#### (I'm @ollpu in telegram too)
 
  - Also listen to commands sent by me (yep, I didn't bother to make another account for the bot)
     - Protect from command injection and other nasties by appending "❱ " to the beginning of all messages
@@ -33,7 +33,7 @@ After the introduction of the Telegram Bot API, I slowly stopped running the bot
     - Possible feature of the future: !listquotes and retrieve specific quotes with !quote [id]
  - This fork (atleast the master branch, I have a for-pr branch inteded for PRs) is not intended for merge back to the original repo.
 
-####The original README shall continiue below
+#### The original README shall continiue below
 
 Multimedia
 ----------
